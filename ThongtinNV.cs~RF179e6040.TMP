@@ -1,0 +1,155 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace QLCHMyPham
+{
+    public partial class ThongtinNV : Form
+    {
+        public ThongtinNV()
+        {
+            InitializeComponent();
+        }
+        private void getData()
+        {
+            //Lấy dữ liệu, hiển thị lên GridView
+            string query = "select * from NhanVien";
+            DataSet ds = new DataSet();
+            Ketnoi cn = new Ketnoi();
+            ds = cn.laydulieu(query, "NhanVien");
+            dgvNV.DataSource = ds.Tables["NhanVien"];
+        }
+        private void ThongtinNV_Load(object sender, EventArgs e)
+        {
+            getData();
+        }
+        private void btnLamMoi_Click(object sender, EventArgs e)
+        {
+            txtTen.Text = "";
+            txtMa.Text = "";
+            txtDiaChi.Text = "";
+            txtCMND.Text = "";
+            txtSDT.Text = "";
+            txtTim.Text = "";
+            getData();
+        }
+
+        private void btnThem_Click(object sender, EventArgs e)
+        {
+            string mnv = txtMa.Text;
+            string tnv = txtTen.Text;
+            string dc = txtDiaChi.Text;
+            string cmnd = txtCMND.Text;
+            string sdt = txtSDT.Text;
+            
+
+            string query = "insert into NhanVien(MaNV, TenNV,DiaChi,CMND,SDT) values(N'" + mnv + "','N" + tnv + "',N'" + dc + "',N'" + cmnd + "',N'" + sdt + "')";
+
+            Ketnoi kn = new Ketnoi();
+            bool kt = kn.ThucThi(query);
+            if (kt == true)
+            {
+                MessageBox.Show("Thêm Thành công!!");
+                getData();
+            }
+            else
+            {
+                MessageBox.Show("Thêm Thất bại!!");
+            }
+        }
+
+        private void btnSua_Click(object sender, EventArgs e)
+        {
+            string mnv = txtMa.Text;
+            string tnv = txtTen.Text;
+            string dc = txtDiaChi.Text;
+            string cmnd = txtCMND.Text;
+            string sdt = txtSDT.Text;
+
+
+            string query = "update NhanVien set TenNV=N'" + tnv + "',DiaChi=N'" + dc + "',CMND=N'" + cmnd + "',SDT=N'" + sdt + "' where MaNV=N'" + mnv + "'";
+
+            Ketnoi kn = new Ketnoi();
+            bool kt = kn.ThucThi(query);
+            if (kt == true)
+            {
+                MessageBox.Show("Cập nhật Thành công!!");
+                getData();
+            }
+            else
+            {
+                MessageBox.Show("Cập nhật Thất bại!!");
+            }
+        }
+
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            string mnv = txtMa.Text;
+            string tnv = txtTen.Text;
+            string dc = txtDiaChi.Text;
+            string cmnd = txtCMND.Text;
+            string sdt = txtSDT.Text;
+
+
+            string query = "delete from NhanVien where MaNV=N'" + mnv + "'";
+
+            Ketnoi kn = new Ketnoi();
+            bool kt = kn.ThucThi(query);
+            if (kt == true)
+            {
+                MessageBox.Show("Xóa Thành công!!");
+                txtTen.Text = "";
+                txtMa.Text = "";
+                txtDiaChi.Text = "";
+                txtCMND.Text = "";
+                txtSDT.Text = "";
+                txtTim.Text = "";
+                getData();
+            }
+            else
+            {
+                MessageBox.Show("Xóa Thất bại!!");
+            }
+        }
+
+        private void btnTK_Click(object sender, EventArgs e)
+        {
+            string tk = txtTim.Text;
+
+
+            string query = "select* from NhanVien  where TenNV like N'%" + tk + "%'";
+
+            Ketnoi kn = new Ketnoi();
+            DataSet ds = kn.laydulieu(query, "NhanVien");
+
+            dgvNV.DataSource = ds.Tables["NhanVien"];
+        }
+
+        private void dgvNV_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            int row = e.RowIndex;
+            if (row >= 0)
+            {
+                txtTen.Text = dgvNV.Rows[row].Cells["TenNV"].Value.ToString();
+                txtMa.Text = dgvNV.Rows[row].Cells["MaNV"].Value.ToString();
+                txtDiaChi.Text = dgvNV.Rows[row].Cells["DiaChi"].Value.ToString();
+                txtCMND.Text = dgvNV.Rows[row].Cells["CMND"].Value.ToString();
+                txtSDT.Text = dgvNV.Rows[row].Cells["SDT"].Value.ToString();
+            }
+        }
+
+        private void btnHeThong_Click(object sender, EventArgs e)
+        {
+            HeThong frm = new HeThong();
+            frm.Show();
+            this.Hide();
+        }
+    }
+       
+}
